@@ -1,0 +1,47 @@
+.create {
+  padding: 0 40px;
+  .cur-money {
+    text-align: center;
+    font-size: 28px;
+    color: #323233;
+    margin-bottom: 50px;
+    .money {
+      font-size: 60px;
+      font-weight: bold;
+    }
+  }
+  .oper-wrap {
+    border-radius: 16px;
+    box-shadow: 0 0 30px 0 rgba(49, 61, 109, 0.1);
+    padding: 38px 40px 38px 48px;
+    & + .oper-wrap {
+      margin-top: 34px;
+    }
+    .at-row {
+      .info-wrap {
+        display: flex;
+        flex-direction: column;
+        text + text{
+          margin-top: 12px;
+        }
+        .name {
+          font-size: 32px;
+          color: #323233;
+          font-weight: bold;
+        }
+        .sequel,.like {
+          font-size: 24px;
+          color: #7d7e80;
+          text-decoration: underline;
+        }
+        .like{
+          text-decoration: none;
+        }
+      }
+      .oper {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+}
