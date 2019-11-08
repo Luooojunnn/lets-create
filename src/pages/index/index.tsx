@@ -11,6 +11,12 @@ export default class Index extends Component {
   constructor(props){
     super(props)
     this.state = {
+      conf: {
+        nums: 0,
+        confirmType(){
+          console.log('')
+        }
+      },
       cardsRenderInfo: {
         id: 1,  // 首页卡片
         nums: 20  // 首次加载20条
@@ -35,7 +41,7 @@ export default class Index extends Component {
   render () {
     return (
       <View className='index'>
-        <Search nums='0'></Search>
+        <Search conf={this.state.conf} ></Search>
         <View className='cards-wrap'>
         <Cards cardsRenderInfo={this.state.cardsRenderInfo}></Cards>
         </View>
