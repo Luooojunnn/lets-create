@@ -3,8 +3,6 @@ import { View } from "@tarojs/components";
 import { AtDrawer, AtSearchBar } from "taro-ui";
 import "taro-ui/dist/style/components/flex.scss";
 
-import r from "../../utils/request.js";
-
 import "./search.less";
 
 export default class Search extends Component {
@@ -14,15 +12,15 @@ export default class Search extends Component {
       searchType: "全部",
       value: "",
       show: false,
-      allType: [],
-      typeIds: []
+      typeList: [],
+      id: 0 // 全部
     };
   }
 
   componentWillMount() {}
 
   componentDidMount() {
-    this.getInfo(this.props.nums);
+    this.initType();
   }
 
   componentWillUnmount() {}
@@ -31,28 +29,13 @@ export default class Search extends Component {
 
   componentDidHide() {}
 
-  /**
-   * 获取小说类型
-   * @param nums - 数量
-   */
-  getInfo(nums) {
-    r({
-      url: "getTypes",
-      data: {
-        nums
-      }
-    })
-      .then(res => {
-        let typsList = [...res.data.typsList, { name: "更多" }];
-        let allType = typsList.map(item => item.name);
-        let typeIds = typsList.map(item => item.id);
-        this.setState({
-          allType,
-          typeIds
-        });
-      })
-      .catch(e => console.log(e));
+  // 数据初始化
+  initType() {
+    this.setState({
+      typeList: this.props.conf.allType.map(i => i.name)
+    });
   }
+
   openSelectType() {
     this.setState({
       show: true
@@ -72,17 +55,32 @@ export default class Search extends Component {
   }
   // 确认选择类型
   subType(index) {
+    this.state.id = this.props.conf.allType[index]["id"];
     // 更多则跳转，否则进行搜索
-    if (this.state.typeIds[index] > -1) {
+    if (index !== this.state.typeList.length) {
       this.setState({
-        searchType: this.state.allType[index]
+        searchType: this.state.typeList[index]
       });
-      if(this.state.value){
-       this.getInfo()
+      if (this.state.value) {
+        this.submit({
+          id: this.state.id,
+          value: this.state.value
+        });
       }
     } else {
       console.log("点击了更多");
     }
+  }
+
+  // 搜索
+  submit({ id, value }) {
+    if (value === "" || id === undefined) {
+      return;
+    }
+    this.props.conf.confirm({
+      id,
+      value
+    });
   }
 
   render() {
@@ -98,6 +96,10 @@ export default class Search extends Component {
           <AtSearchBar
             value={this.state.value}
             onChange={this.handleChange.bind(this)}
+            onActionClick={this.submit.bind(this, {
+              id: this.state.id,
+              value: this.state.value
+            })}
           />
         </View>
 
@@ -106,7 +108,7 @@ export default class Search extends Component {
           mask
           onClose={this.onClose.bind(this)}
           onItemClick={this.subType.bind(this)}
-          items={this.state.allType}
+          items={this.state.typeList}
         ></AtDrawer>
       </View>
     );
